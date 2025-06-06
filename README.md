@@ -1,12 +1,34 @@
-# React + Vite
+# 🏠 Rented Room Web Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web platform where **property owners** can list rooms for rent and **students** can browse and contact owners. Built with **React** for the frontend and **Firebase** for backend services like Authentication, Firestore, and Storage.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## Expanding the ESLint configuration
+- 🔐 Firebase Authentication (Login/Signup for Students & Owners)
+- 📝 Room listing with details:
+  - Room image
+  - Price per month/year
+  - Facilities (AC, Wi-Fi, etc.)
+  - Owner contact info
+- 📱 Role-Based Access:
+  - **Student**: Can view listings and contact owners
+  - **Owner**: Can post/edit/delete listings
+- 🗂️ Image uploads with Firebase Storage
+- 🌐 Real-time database using Firestore
+- ⚡ Optimized state management using Redux
+- 🎨 UI built with Tailwind CSS
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🛠️ Tech Stack
+
+| Frontend       | Backend         | Database         | Auth            | Styling        |
+|----------------|------------------|------------------|------------------|----------------|
+| React          | Firebase         | Firestore        | Firebase Auth    | Tailwind CSS   |
+
+---
+
+## 📁 Folder Structure
+
