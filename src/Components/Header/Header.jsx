@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
+import Logout from './Logout'
+import { useSelector } from 'react-redux'
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
+    const authStatus = useSelector((state) => state.auth.status)
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen)
@@ -21,25 +24,28 @@ export default function Header() {
                         />
                     </Link>
 
-                    {/* Desktop Action Buttons */}
+                    {/* Right-side Auth Buttons / Logout */}
                     <div className="flex items-center lg:order-2">
-                        <Link
-                            to="/login"
-                            className="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:ring-orange-300 font-medium rounded-lg text-xs sm:text-sm px-2 sm:px-3 lg:px-5 py-1.5 sm:py-2 lg:py-2.5 mr-1 sm:mr-2 focus:outline-none transition-colors duration-200"
-                        >
-                            Log in
-                        </Link>
-                        {/* <Link
-                            to="#"
-                            className="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:ring-orange-300 font-medium rounded-lg text-xs sm:text-sm px-2 sm:px-3 lg:px-5 py-1.5 sm:py-2 lg:py-2.5 mr-1 sm:mr-2 focus:outline-none transition-colors duration-200"
-                        >
-                            Sign up
-                        </Link> */}
-                        {
-                            
-                        }
-                        
-                        {/* Mobile menu button */}
+                        {!authStatus ? (
+                            <>
+                                <Link
+                                    to="/login"
+                                    className="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:ring-orange-300 font-medium rounded-lg text-xs sm:text-sm px-2 sm:px-3 lg:px-5 py-1.5 sm:py-2 lg:py-2.5 mr-1 sm:mr-2 focus:outline-none transition-colors duration-200"
+                                >
+                                    Log in
+                                </Link>
+                                <Link
+                                    to="/signup"
+                                    className="text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:ring-orange-300 font-medium rounded-lg text-xs sm:text-sm px-2 sm:px-3 lg:px-5 py-1.5 sm:py-2 lg:py-2.5 mr-1 sm:mr-2 focus:outline-none transition-colors duration-200"
+                                >
+                                    Sign up
+                                </Link>
+                            </>
+                        ) : (
+                            <Logout />
+                        )}
+
+                        {/* Mobile menu toggle */}
                         <button
                             type="button"
                             className="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-colors duration-200"
@@ -47,6 +53,7 @@ export default function Header() {
                             aria-expanded={isMenuOpen}
                         >
                             <span className="sr-only">Open main menu</span>
+                            {/* Hamburger Icon */}
                             <svg
                                 className={`w-6 h-6 ${isMenuOpen ? 'hidden' : 'block'}`}
                                 fill="currentColor"
@@ -58,6 +65,7 @@ export default function Header() {
                                     clipRule="evenodd"
                                 />
                             </svg>
+                            {/* Close Icon */}
                             <svg
                                 className={`w-6 h-6 ${isMenuOpen ? 'block' : 'hidden'}`}
                                 fill="currentColor"
@@ -81,67 +89,47 @@ export default function Header() {
                     >
                         <ul className="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-6 xl:space-x-8 lg:mt-0 bg-white lg:bg-transparent border-t border-gray-200 lg:border-0 pt-4 lg:pt-0">
                             <li>
-                                <NavLink 
-                                    to="/"
-                                    className={({isActive}) =>
-                                        `block py-2 px-3 lg:px-0 text-sm sm:text-base duration-200 ${
-                                            isActive ? "text-orange-700 bg-orange-50 lg:bg-transparent" : "text-gray-700"
-                                        } border-b border-gray-100 lg:border-0 hover:bg-gray-50 lg:hover:bg-transparent hover:text-orange-700 transition-colors`
-                                    }
-                                    onClick={() => setIsMenuOpen(false)}
-                                >
+                                <NavLink to="/" className={({ isActive }) =>
+                                    `block py-2 px-3 lg:px-0 text-sm sm:text-base duration-200 ${
+                                        isActive ? "text-orange-700 bg-orange-50 lg:bg-transparent" : "text-gray-700"
+                                    } border-b border-gray-100 lg:border-0 hover:bg-gray-50 lg:hover:bg-transparent hover:text-orange-700 transition-colors`
+                                } onClick={() => setIsMenuOpen(false)}>
                                     Home
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink 
-                                    to="/about"
-                                    className={({isActive}) =>
-                                        `block py-2 px-3 lg:px-0 text-sm sm:text-base duration-200 ${
-                                            isActive ? "text-orange-700 bg-orange-50 lg:bg-transparent" : "text-gray-700"
-                                        } border-b border-gray-100 lg:border-0 hover:bg-gray-50 lg:hover:bg-transparent hover:text-orange-700 transition-colors`
-                                    }
-                                    onClick={() => setIsMenuOpen(false)}
-                                >
+                                <NavLink to="/about" className={({ isActive }) =>
+                                    `block py-2 px-3 lg:px-0 text-sm sm:text-base duration-200 ${
+                                        isActive ? "text-orange-700 bg-orange-50 lg:bg-transparent" : "text-gray-700"
+                                    } border-b border-gray-100 lg:border-0 hover:bg-gray-50 lg:hover:bg-transparent hover:text-orange-700 transition-colors`
+                                } onClick={() => setIsMenuOpen(false)}>
                                     About
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink 
-                                    to="/Contact"
-                                    className={({isActive}) =>
-                                        `block py-2 px-3 lg:px-0 text-sm sm:text-base duration-200 ${
-                                            isActive ? "text-orange-700 bg-orange-50 lg:bg-transparent" : "text-gray-700"
-                                        } border-b border-gray-100 lg:border-0 hover:bg-gray-50 lg:hover:bg-transparent hover:text-orange-700 transition-colors`
-                                    }
-                                    onClick={() => setIsMenuOpen(false)}
-                                >
+                                <NavLink to="/contact" className={({ isActive }) =>
+                                    `block py-2 px-3 lg:px-0 text-sm sm:text-base duration-200 ${
+                                        isActive ? "text-orange-700 bg-orange-50 lg:bg-transparent" : "text-gray-700"
+                                    } border-b border-gray-100 lg:border-0 hover:bg-gray-50 lg:hover:bg-transparent hover:text-orange-700 transition-colors`
+                                } onClick={() => setIsMenuOpen(false)}>
                                     Contact Us
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink 
-                                    to="/add-post"
-                                    className={({isActive}) =>
-                                        `block py-2 px-3 lg:px-0 text-sm sm:text-base duration-200 ${
-                                            isActive ? "text-orange-700 bg-orange-50 lg:bg-transparent" : "text-gray-700"
-                                        } border-b border-gray-100 lg:border-0 hover:bg-gray-50 lg:hover:bg-transparent hover:text-orange-700 transition-colors`
-                                    }
-                                    onClick={() => setIsMenuOpen(false)}
-                                >
+                                <NavLink to="/add-post" className={({ isActive }) =>
+                                    `block py-2 px-3 lg:px-0 text-sm sm:text-base duration-200 ${
+                                        isActive ? "text-orange-700 bg-orange-50 lg:bg-transparent" : "text-gray-700"
+                                    } border-b border-gray-100 lg:border-0 hover:bg-gray-50 lg:hover:bg-transparent hover:text-orange-700 transition-colors`
+                                } onClick={() => setIsMenuOpen(false)}>
                                     Add post
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink 
-                                    to="/all-post"
-                                    className={({isActive}) =>
-                                        `block py-2 px-3 lg:px-0 text-sm sm:text-base duration-200 ${
-                                            isActive ? "text-orange-700 bg-orange-50 lg:bg-transparent" : "text-gray-700"
-                                        } border-b border-gray-100 lg:border-0 hover:bg-gray-50 lg:hover:bg-transparent hover:text-orange-700 transition-colors`
-                                    }
-                                    onClick={() => setIsMenuOpen(false)}
-                                >
+                                <NavLink to="/all-post" className={({ isActive }) =>
+                                    `block py-2 px-3 lg:px-0 text-sm sm:text-base duration-200 ${
+                                        isActive ? "text-orange-700 bg-orange-50 lg:bg-transparent" : "text-gray-700"
+                                    } border-b border-gray-100 lg:border-0 hover:bg-gray-50 lg:hover:bg-transparent hover:text-orange-700 transition-colors`
+                                } onClick={() => setIsMenuOpen(false)}>
                                     All posts
                                 </NavLink>
                             </li>

@@ -6,7 +6,8 @@ import Allpost from "./Allpost.jsx";
 import Contact from "./Contact.jsx";
 import About from "./About.jsx";
 import Home from "./Home/Home.jsx";
-
+import Login from "./Login.jsx"
+import SignUp from "./SignUp.jsx";
 export  {
 
 // Footer, // somthing wrong with Footer import
@@ -15,5 +16,7 @@ export  {
   Allpost,
   Contact,
   About,
-  Home
+  Home,
+  Login,
+  SignUp
 };
