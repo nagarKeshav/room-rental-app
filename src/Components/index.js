@@ -8,6 +8,7 @@ import About from "./About.jsx";
 import Home from "./Home/Home.jsx";
 import Login from "./Login.jsx"
 import SignUp from "./SignUp.jsx";
+import RoomCard from "./RoomCard.jsx";
 export  {
 
 // Footer, // somthing wrong with Footer import
@@ -18,5 +19,7 @@ export  {
   About,
   Home,
   Login,
-  SignUp
+  SignUp,
+  RoomCard
+
 };

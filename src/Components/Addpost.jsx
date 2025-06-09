@@ -1,5 +1,9 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
+import {auth} from '../Firebase/Firebase'
+import { collection, addDoc, Timestamp } from "firebase/firestore";
+import { db } from "../Firebase/Firebase"; // Adjust path as per your project
+
+
 
 const Addpost = () => {
   const [formData, setFormData] = useState({
@@ -157,6 +161,10 @@ console.log(uploadImageUrl.secure_url);
       setErrors(formErrors);
       setIsSubmitting(false);
       return;
+
+
+      
+
     }
 
     try {
@@ -173,6 +181,42 @@ console.log(uploadImageUrl.secure_url);
 
       console.log('Room data submitted:', formData);
       setSubmitSuccess(true);
+
+      try {
+  const roomData = {
+    title: formData.title,
+    description: formData.description,
+    price: parseFloat(formData.price),
+    facilities: formData.facilities,
+    imageUrl: formData.image,
+    createdAt: Timestamp.now(),
+    ownerId: auth.currentUser.uid 
+  };
+
+  await addDoc(collection(db, "rooms"), roomData); // 👈 Saving to Firestore
+
+  console.log('Room data submitted to Firestore:', roomData);
+  setSubmitSuccess(true);
+
+  // Reset form
+  setFormData({
+    title: '',
+    description: '',
+    price: '',
+    facilities: [],
+    image: null
+  });
+  setImagePreview(null);
+  setErrors({});
+  
+  // Reset file input
+  const fileInput = document.getElementById('image');
+  if (fileInput) fileInput.value = '';
+} catch (error) {
+  console.error("Firestore submit error:", error);
+  setErrors({ submit: 'Failed to submit room. Please try again.' });
+}
+
 
       // Reset form after successful submission
       setFormData({
