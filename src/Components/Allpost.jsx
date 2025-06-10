@@ -15,6 +15,7 @@ function Allpost() {
   if (!authStatus) {
   return <Navigate to="/login" />;
 }
+  console.log(authStatus);
 
   const fetchMyRooms = async () => {
     try {
@@ -41,7 +42,7 @@ function Allpost() {
   useEffect(() => {
     fetchMyRooms();
   }, []);
-  console.log(rooms);
+  // console.log(rooms);
   
 
   if (loading) return <div className="p-4">Loading...</div>;

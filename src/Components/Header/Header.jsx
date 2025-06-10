@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import Logout from './Logout'
 import { useSelector } from 'react-redux'
+import logo from '../../assets/logo.png' // Adjust the path to your logo image
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -18,10 +19,11 @@ export default function Header() {
                     {/* Logo */}
                     <Link to="/" className="flex items-center">
                         <img
-                            src="https://alexharkness.com/wp-content/uploads/2020/06/logo-2.png"
-                            className="mr-2 sm:mr-3 h-8 sm:h-10 md:h-12 w-auto object-contain"
+                            src={logo}
+                            className="mr-2 sm:mr-3 h-8 sm:h-10 md:h-12 w-auto object-cover "
                             alt="Logo"
                         />
+                        
                     </Link>
 
                     {/* Right-side Auth Buttons / Logout */}

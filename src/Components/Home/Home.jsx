@@ -26,6 +26,9 @@ const Home = () => {
     fetchAllRooms();
   }, []);
 
+  console.log(allRooms);
+  
+
   if (loading) return <div>Loading...</div>;
 
   return (
@@ -34,7 +37,7 @@ const Home = () => {
         <p>No rooms found.</p>
       ) : (
         allRooms.map(room => (
-          <RoomCard key={room.id} id={room.id} rooms={room} />
+         <RoomCard key={room.id} room={room} />
         ))
       )}
     </div>

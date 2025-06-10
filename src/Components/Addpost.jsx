@@ -2,7 +2,8 @@ import { useState } from 'react';
 import {auth} from '../Firebase/Firebase'
 import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { db } from "../Firebase/Firebase"; // Adjust path as per your project
-
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 
 const Addpost = () => {
@@ -18,6 +19,14 @@ const Addpost = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
+  const authStatus = useSelector((state) => state.auth.status);
+  const navigate = useNavigate();
+
+  // if(!authStatus){
+  //   navigate('/login')
+  // }
+  console.log(authStatus);
+  
 
   const availableFacilities = [
     'WiFi',
@@ -31,6 +40,7 @@ const Addpost = () => {
     'Swimming Pool',
     'Balcony'
   ];
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
