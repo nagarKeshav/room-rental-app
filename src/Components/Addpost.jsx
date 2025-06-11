@@ -208,7 +208,7 @@ const Addpost = () => {
                 rows="4"
                 className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors resize-vertical ${errors.description ? 'border-red-500 bg-red-50' : 'border-gray-300'
                   }`}
-                placeholder="Describe your room in detail. Include location, amenities, and what makes it special..."
+                placeholder="Describe your room in detail. Include amenities, and what makes it special..."
               />
               {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description}</p>}
             </div>
@@ -228,7 +228,7 @@ const Addpost = () => {
                 rows="4"
                 className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors resize-vertical ${errors.description ? 'border-red-500 bg-red-50' : 'border-gray-300'
                   }`}
-                placeholder="Describe your room in detail. Include location, amenities, and what makes it special..."
+                placeholder="enter your room's location (e.g., City, Area, Nearby Landmarks)"
               />
               {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description}</p>}
             </div>
