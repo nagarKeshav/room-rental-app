@@ -236,7 +236,7 @@ const Addpost = () => {
             {/* Price Field */}
             <div>
               <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
-                Price per Night ($) *
+                Price per Month (₹) *
               </label>
               <input
                 type="number"
