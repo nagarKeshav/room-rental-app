@@ -2,11 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../Firebase/Firebase';
 import RoomCard from '../RoomCard';
+import { useSelector } from 'react-redux';
+import { Navigate } from 'react-router-dom';
 
 const Home = () => {
   const [allRooms, setAllRooms] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const authStatus = useSelector((state) => state.auth.status);
+
+  
   useEffect(() => {
     const fetchAllRooms = async () => {
       try {
@@ -27,6 +32,10 @@ const Home = () => {
   }, []);
 
   console.log(allRooms);
+
+  if (!authStatus) {
+    return <Navigate to="/login" />;
+  }
   
 
   if (loading) return <div>Loading...</div>;

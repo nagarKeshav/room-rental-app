@@ -85,7 +85,9 @@ export default function LoginPage() {
       if (session) {
         const userData = await authService.getCurrentUser();
         if (userData) {
-          dispatch(Login(userData));
+          dispatch(Login({userData}));
+          console.log(userData);
+          
           navigate('/');
         }
       }

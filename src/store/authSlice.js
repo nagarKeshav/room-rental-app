@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import { LogIn } from 'lucide-react';
+// import { LogIn } from 'lucide-react';
 
 const initialState = {
     status: false,
@@ -18,6 +18,7 @@ export const authSlice = createSlice({
         },
         logout: (state) => {
            state.status = false
+           state.userData = null
         }
     }
 })

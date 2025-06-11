@@ -1,122 +1,78 @@
 import { useState } from 'react';
-import {auth} from '../Firebase/Firebase'
+import { auth } from '../Firebase/Firebase';
 import { collection, addDoc, Timestamp } from "firebase/firestore";
-import { db } from "../Firebase/Firebase"; // Adjust path as per your project
+import { db } from "../Firebase/Firebase";
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-
 
 const Addpost = () => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
+    location: '',
     price: '',
     facilities: [],
-    image: null
+    image: null,
   });
-
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
+
   const authStatus = useSelector((state) => state.auth.status);
   const navigate = useNavigate();
 
-  // if(!authStatus){
-  //   navigate('/login')
-  // }
-  console.log(authStatus);
-  
-
   const availableFacilities = [
-    'WiFi',
-    'TV',
-    'Air Conditioning',
-    'Private Bathroom',
-    'Kitchen Access',
-    'Parking',
-    'Laundry',
-    'Gym Access',
-    'Swimming Pool',
-    'Balcony'
+    'WiFi', 'TV', 'Air Conditioning', 'Private Bathroom',
+    'Kitchen Access', 'Parking', 'Laundry', 'Gym Access',
+    'Swimming Pool', 'Balcony'
   ];
-
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
-    }
+    setFormData(prev => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      // Validate file type
-      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-      if (!validTypes.includes(file.type)) {
-        setErrors(prev => ({
-          ...prev,
-          image: 'Please select a valid image file (JPEG, PNG, or WebP)'
-        }));
-        return;
-      }
+    if (!file) return;
 
-      // Validate file size (5MB limit)
-      if (file.size > 5 * 1024 * 1024) {
-        setErrors(prev => ({
-          ...prev,
-          image: 'Image size must be less than 5MB'
-        }));
-        return;
-      }
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+      setErrors(prev => ({ ...prev, image: 'Please select a valid image file (JPEG, PNG, or WebP)' }));
+      return;
+    }
 
-      const data = new FormData(); // Capital F is important
-data.append('file', file);
-data.append('upload_preset', 'unsigned_preset');
-// cloud_name is NOT needed in body; it's in the URL
+    if (file.size > 5 * 1024 * 1024) {
+      setErrors(prev => ({ ...prev, image: 'Image size must be less than 5MB' }));
+      return;
+    }
 
-const res = await fetch('https://api.cloudinary.com/v1_1/dfy2yr2f0/image/upload', {
-  method: 'POST',
-  body: data
-});
+    try {
+      const data = new FormData();
+      data.append('file', file);
+      data.append('upload_preset', 'unsigned_preset');
 
-const uploadImageUrl = await res.json();
+      const res = await fetch('https://api.cloudinary.com/v1_1/dfy2yr2f0/image/upload', {
+        method: 'POST',
+        body: data,
+      });
 
-console.log(uploadImageUrl.secure_url);
+      const uploadImageUrl = await res.json();
 
-        
+      if (!uploadImageUrl.secure_url) throw new Error("Upload failed");
 
-      
+      setFormData(prev => ({ ...prev, image: uploadImageUrl.secure_url }));
 
-      setFormData(prev => ({
-        ...prev,
-        image: uploadImageUrl.secure_url
-      }));
-
-      // Create preview
       const reader = new FileReader();
-      reader.onload = (e) => {
-        setImagePreview(e.target.result);
-      };
+      reader.onload = (e) => setImagePreview(e.target.result);
       reader.readAsDataURL(file);
 
-      // Clear any existing error
-      if (errors.image) {
-        setErrors(prev => ({
-          ...prev,
-          image: ''
-        }));
-      }
+      setErrors(prev => ({ ...prev, image: '' }));
+    } catch (error) {
+      console.error("Image upload error:", error);
+      setErrors(prev => ({ ...prev, image: 'Failed to upload image. Try again.' }));
     }
   };
 
@@ -132,31 +88,22 @@ console.log(uploadImageUrl.secure_url);
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.title.trim()) {
-      newErrors.title = 'Title is required';
-    } else if (formData.title.length < 3) {
-      newErrors.title = 'Title must be at least 3 characters long';
-    }
+    if (!formData.title.trim()) newErrors.title = 'Title is required';
+    else if (formData.title.length < 3) newErrors.title = 'Title must be at least 3 characters';
 
-    if (!formData.description.trim()) {
-      newErrors.description = 'Description is required';
-    } else if (formData.description.length < 10) {
-      newErrors.description = 'Description must be at least 10 characters long';
-    }
+    if (!formData.description.trim()) newErrors.description = 'Description is required';
+    else if (formData.description.length < 10) newErrors.description = 'Description must be at least 10 characters';
 
-    if (!formData.price) {
-      newErrors.price = 'Price is required';
-    } else if (isNaN(formData.price) || parseFloat(formData.price) <= 0) {
+    if(!formData.location.trim()) newErrors.location = 'Location is required';
+    else if (formData.location.length < 3) newErrors.location = 'Location must be at least 3 characters';
+
+    if (!formData.price) newErrors.price = 'Price is required';
+    else if (isNaN(formData.price) || parseFloat(formData.price) <= 0)
       newErrors.price = 'Price must be a valid positive number';
-    }
 
-    if (!formData.image) {
-      newErrors.image = 'Room image is required';
-    }
+    if (!formData.image) newErrors.image = 'Room image is required';
 
-    if (formData.facilities.length === 0) {
-      newErrors.facilities = 'Please select at least one facility';
-    }
+    if (formData.facilities.length === 0) newErrors.facilities = 'Please select at least one facility';
 
     return newErrors;
   };
@@ -171,84 +118,48 @@ console.log(uploadImageUrl.secure_url);
       setErrors(formErrors);
       setIsSubmitting(false);
       return;
-
-
-      
-
     }
 
     try {
-      // Create FormData for file upload
-      const submitData = new FormData();
-      submitData.append('title', formData.title);
-      submitData.append('description', formData.description);
-      submitData.append('price', formData.price);
-      submitData.append('facilities', JSON.stringify(formData.facilities));
-      submitData.append('image', formData.image);
+      const roomData = {
+        title: formData.title,
+        description: formData.description,
+        location: formData.location,
+        price: parseFloat(formData.price),
+        facilities: formData.facilities,
+        imageUrl: formData.image,
+        createdAt: Timestamp.now(),
+        ownerId: auth.currentUser.uid
+      };
 
-      // Mock API call - replace with actual API endpoint
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      console.log('Room data submitted:', formData);
+      await addDoc(collection(db, "rooms"), roomData);
       setSubmitSuccess(true);
 
-      try {
-  const roomData = {
-    title: formData.title,
-    description: formData.description,
-    price: parseFloat(formData.price),
-    facilities: formData.facilities,
-    imageUrl: formData.image,
-    createdAt: Timestamp.now(),
-    ownerId: auth.currentUser.uid 
-  };
-
-  await addDoc(collection(db, "rooms"), roomData); // 👈 Saving to Firestore
-
-  console.log('Room data submitted to Firestore:', roomData);
-  setSubmitSuccess(true);
-
-  // Reset form
-  setFormData({
-    title: '',
-    description: '',
-    price: '',
-    facilities: [],
-    image: null
-  });
-  setImagePreview(null);
-  setErrors({});
-  
-  // Reset file input
-  const fileInput = document.getElementById('image');
-  if (fileInput) fileInput.value = '';
-} catch (error) {
-  console.error("Firestore submit error:", error);
-  setErrors({ submit: 'Failed to submit room. Please try again.' });
-}
-
-
-      // Reset form after successful submission
+      // Reset
       setFormData({
         title: '',
         description: '',
+        location: '',
         price: '',
         facilities: [],
         image: null
       });
       setImagePreview(null);
       setErrors({});
-
-      // Reset file input
       const fileInput = document.getElementById('image');
       if (fileInput) fileInput.value = '';
-
     } catch (error) {
+      console.error("Firestore submit error:", error);
       setErrors({ submit: 'Failed to submit room. Please try again.' });
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  if (!authStatus) {
+    navigate('/login');
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 py-8 px-4">
@@ -293,6 +204,26 @@ console.log(uploadImageUrl.secure_url);
                 id="description"
                 name="description"
                 value={formData.description}
+                onChange={handleInputChange}
+                rows="4"
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors resize-vertical ${errors.description ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                  }`}
+                placeholder="Describe your room in detail. Include location, amenities, and what makes it special..."
+              />
+              {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description}</p>}
+            </div>
+
+            
+
+            {/* Location Field */}
+            <div>
+              <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
+                Location *
+              </label>
+              <textarea
+                id="location"
+                name="location"
+                value={formData.location}
                 onChange={handleInputChange}
                 rows="4"
                 className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors resize-vertical ${errors.description ? 'border-red-500 bg-red-50' : 'border-gray-300'
